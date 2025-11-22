@@ -1,7 +1,7 @@
 import React from 'react';
 import { useDraftStore } from '../store/useDraftStore';
 import { useMultiplayerStore } from '../store/useMultiplayerStore';
-import { Play, Bot, Users, Swords } from 'lucide-react';
+import { Play, Bot, Swords } from 'lucide-react';
 
 export const Home: React.FC = () => {
     const setStep = (step: 'HOME' | 'INPUT' | 'ORDER_SETTING' | 'DRAFTING' | 'LOBBY') => useDraftStore.setState({ step });

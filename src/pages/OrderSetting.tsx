@@ -13,7 +13,6 @@ export const OrderSetting: React.FC = () => {
     const isAIMode = useDraftStore((state) => state.isAIMode);
     const userTeamId = useDraftStore((state) => state.userTeamId);
     const setUserTeamId = useDraftStore((state) => state.setUserTeamId);
-    const isCustomMode = useDraftStore((state) => state.isCustomMode);
 
     const { isHost, roomId, broadcast, myId } = useMultiplayerStore();
     const isMultiplayer = !!roomId;
@@ -120,14 +119,8 @@ export const OrderSetting: React.FC = () => {
 
             <div className="flex w-full h-full gap-4 pr-2">
                 {/* 2. 왼쪽: 숫자 컬럼 (고정된 순서 1, 2, 3...) */}
-                {/* 오른쪽 리스트와 줄을 맞추기 위해 같은 space-y-3 적용 */}
                 <div className="flex flex-col space-y-3 pt-[1px] shrink-0">
                     {localOrder.map((_, index) => (
-                        /* 오른쪽 카드와 높이 중심을 맞추기 위한 래퍼입니다.
-                        오른쪽 카드가 p-4(padding 1rem)를 쓰고 있으므로, 
-                        여기서도 비슷한 높이를 확보해주면 중앙 정렬이 예쁩니다.
-                        (카드의 대략적 높이에 맞춰 h-[72px] 등으로 고정하거나 flex로 정렬)
-                        */
                         <div key={`number-${index}`} className="flex items-center justify-center h-[70px]">
                             <div className="flex items-center justify-center w-10 h-10 bg-app text-primary font-bold rounded-full border border-primary/20 shrink-0 shadow-[0_0_10px_rgba(0,255,163,0.1)]">
                                 {index + 1}
@@ -153,7 +146,6 @@ export const OrderSetting: React.FC = () => {
                                             let roleText = '';
                                             let isMyTeam = false;
                                             let isAI = false;
-                                            let showRadio = false;
 
                                             if (isMultiplayer) {
                                                 // Multiplayer Mode
@@ -171,16 +163,12 @@ export const OrderSetting: React.FC = () => {
                                                 // Solo Modes
                                                 if (isAIMode) {
                                                     // Solo-AI Mode
-                                                    showRadio = true;
                                                     if (userTeamId === teamId) {
                                                         isMyTeam = true;
                                                     } else {
                                                         roleText = '(AI)';
                                                         isAI = true;
                                                     }
-                                                } else {
-                                                    // Solo-Custom / Solo-Preset
-                                                    // No special role text or radio buttons
                                                 }
                                             }
 
