@@ -1,50 +1,39 @@
 # 🐍 Snake Draft Simulator (2025 CHZZK CUP)
 
+**🔗 Live Demo**: [http://snakedrftsimul.vercel.app/](http://snakedrftsimul.vercel.app/)
+
 **스네이크 드래프트(Snake Draft)** 방식을 사용하여 팀장들에게 공정하게 선수를 배분하는 시뮬레이터입니다.
 2025 자낳대(치지직 컵) 드래프트를 모의로 진행해볼 수 있도록 개발되었습니다.
 
-## ✨ 주요 기능
+## 📖 사용 방법 (User Guide)
 
-### 1. 다양한 게임 모드
-- **혼자 해보기 (Preset Mode)**: 미리 설정된 데이터로 혼자서 드래프트 시스템을 체험해볼 수 있습니다.
-- **AI와 해보기 (Solo AI Mode)**: AI 봇들과 함께 실제 드래프트처럼 경쟁하며 연습할 수 있습니다.
-- **멀티플레이 (Multiplayer Mode)**: **P2P 연결(PeerJS)**을 통해 방장이 방을 만들고, 친구들을 초대하여 실시간으로 드래프트를 진행할 수 있습니다.
+### 1. 혼자 해보기 (Solo Preset Mode)
+미리 설정된 데이터로 혼자서 드래프트 시스템을 체험해볼 수 있습니다.
+1. 홈 화면에서 **"혼자 해보기"** 버튼을 클릭합니다.
+2. **순서 정하기** 화면에서 드래그 앤 드롭으로 팀 순서를 자유롭게 배치해 봅니다.
+3. **"드래프트 시작"**을 누르면 드래프트가 시작됩니다.
+4. 원하는 선수를 클릭하여 팀에 영입하세요. (모든 팀을 혼자 조작합니다)
 
-### 2. 드래프트 시스템
-- **스네이크 방식**: 1-2-3-4-5-5-4-3-2-1 순서로 공정하게 픽 순서가 돌아갑니다.
-- **포지션 제한**: 각 팀은 TOP, JUNGLE, MID, BOT, SUP 포지션을 하나씩 채워야 합니다.
-- **포인트 시스템**: 각 선수의 등급(Tier)과 점수(Score)를 고려하여 팀을 구성할 수 있습니다.
+### 2. AI와 해보기 (Solo AI Mode)
+AI 봇들과 함께 실제 드래프트처럼 경쟁하며 연습할 수 있습니다.
+1. 홈 화면에서 **"AI와 해보기"** 버튼을 클릭합니다.
+2. **순서 정하기** 화면에서 본인이 플레이할 팀을 선택(Radio 버튼)하고, 순서를 배치합니다.
+3. 게임이 시작되면 본인 차례에 선수를 선택합니다.
+4. 다른 팀(AI)은 자동으로 선수를 픽하며 진행됩니다.
 
-### 3. 편의 기능
-- **드래그 앤 드롭**: 팀 순서를 직관적으로 변경할 수 있습니다.
-- **되돌리기 (Undo)**: 실수로 픽을 했을 경우 이전 상태로 되돌릴 수 있습니다 (싱글 모드).
-- **실시간 동기화**: 멀티플레이 시 모든 참여자의 화면이 실시간으로 동기화됩니다.
-
-## 🛠 기술 스택 (Tech Stack)
-
-- **Frontend**: React, TypeScript, Vite
-- **Styling**: Tailwind CSS
-- **State Management**: Zustand (Local & Session Persistence)
-- **Real-time Communication**: PeerJS (WebRTC P2P)
-- **Icons**: Lucide React
-
-## 🚀 설치 및 실행 방법
-
-```bash
-# 1. 저장소 클론
-git clone https://github.com/your-username/draftsimulator.git
-
-# 2. 패키지 설치
-npm install
-
-# 3. 개발 서버 실행
-npm run dev
-```
-
-## 🌐 배포 (Deployment)
-
-이 프로젝트는 **Vercel** 또는 **Netlify**를 통해 무료로 쉽게 배포할 수 있습니다.
-PeerJS를 사용하므로 HTTPS 환경(Vercel/Netlify 기본 제공)에서 원활하게 작동합니다.
+### 3. 멀티플레이 (Multiplayer Mode)
+친구들을 초대하여 실시간으로 드래프트를 진행할 수 있습니다.
+1. **방 만들기 (Host)**:
+   - 홈 화면에서 **"멀티플레이"** -> **"방 만들기"**를 클릭합니다.
+   - 생성된 **초대 코드**를 복사하여 친구들에게 공유합니다.
+   - 친구들이 모두 들어오면 **"게임 시작"**을 누릅니다.
+2. **입장하기 (Guest)**:
+   - 홈 화면에서 **"멀티플레이"** -> **"초대 코드 입력"**란에 코드를 붙여넣고 **"입장"**을 클릭합니다.
+   - 방장이 게임을 시작할 때까지 대기합니다.
+3. **게임 진행**:
+   - 게임이 시작되면 무작위로 팀과 순서가 배정됩니다.
+   - 본인 차례가 오면 선수를 선택합니다. (제한 시간 내에 선택하지 않으면 랜덤으로 선택됩니다)
 
 ---
+**Reference**: This project was inspired by [chzzk_draft](https://github.com/skfnbsadfkjbsdf/chzzk_draft).
 Developed for 2025 CHZZK CUP Fan Project.
