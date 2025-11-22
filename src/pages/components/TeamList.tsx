@@ -2,7 +2,7 @@ import React from 'react';
 import { useDraftStore } from '../../store/useDraftStore';
 import { useMultiplayerStore } from '../../store/useMultiplayerStore';
 import clsx from 'clsx';
-import { Shield } from 'lucide-react';
+import { Shield, Trees, Wand2, Crosshair, Heart } from 'lucide-react';
 import type { Team } from '../../types';
 
 export const TeamList: React.FC = () => {
@@ -123,7 +123,12 @@ export const TeamList: React.FC = () => {
                                             </>
                                         ) : (
                                             <div className="flex flex-col items-center opacity-30">
-                                                <Shield className="w-4 h-4 text-text-sub mb-1" />
+                                                {/* Role Icons */}
+                                                {pos === 'TOP' && <Shield className="w-4 h-4 text-text-sub mb-1" />}
+                                                {pos === 'JUNGLE' && <Trees className="w-4 h-4 text-text-sub mb-1" />}
+                                                {pos === 'MID' && <Wand2 className="w-4 h-4 text-text-sub mb-1" />}
+                                                {pos === 'BOT' && <Crosshair className="w-4 h-4 text-text-sub mb-1" />}
+                                                {pos === 'SUP' && <Heart className="w-4 h-4 text-text-sub mb-1" />}
                                                 <span className="text-[9px] text-text-sub truncate max-w-[60px]">{pos}</span>
                                             </div>
                                         )}

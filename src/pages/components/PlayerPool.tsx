@@ -63,7 +63,7 @@ export const PlayerPool: React.FC = () => {
                                             onClick={() => handlePick(player.id)}
                                             disabled={isDisabled}
                                             className={clsx(
-                                                "h-36 p-3 rounded-lg text-sm font-medium transition-all duration-200 border text-left relative overflow-hidden group flex flex-col justify-between",
+                                                "h-28 p-2 rounded-lg text-sm font-medium transition-all duration-200 border text-left relative overflow-hidden group flex flex-col justify-between",
                                                 player.isDrafted
                                                     ? "bg-neutral-900 border-white/5 text-text-sub/30 cursor-not-allowed"
                                                     : isDisabled
@@ -72,13 +72,13 @@ export const PlayerPool: React.FC = () => {
                                             )}
                                         >
                                             <div className="w-full">
-                                                <div className="text-[10px] opacity-70 mb-1 uppercase tracking-wider">{player.position}</div>
-                                                <div className="truncate font-bold text-lg leading-tight">{player.name}</div>
+                                                <div className="text-[9px] opacity-70 mb-0.5 uppercase tracking-wider">{player.position}</div>
+                                                <div className="truncate font-bold text-sm leading-tight">{player.name}</div>
                                             </div>
 
-                                            <div className="w-full h-4 mt-2">
+                                            <div className="w-full h-3 mt-1">
                                                 {player.isDrafted ? (
-                                                    <div className="text-[10px] text-text-sub/50 truncate">
+                                                    <div className="text-[9px] text-text-sub/50 truncate">
                                                         Picked by {teams.find((t: Team) => t.id === player.draftedBy)?.leaderName}
                                                     </div>
                                                 ) : (

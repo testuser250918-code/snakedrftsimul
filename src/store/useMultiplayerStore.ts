@@ -337,13 +337,11 @@ export const useMultiplayerStore = create<MultiplayerState>((set, get) => ({
         // useDraftStore doesn't have a "resetGameOnly" but `resetDraftingState` resets picks.
         // We also need to reset `currentRound`, `currentPickIndex`, `draftHistory`.
 
-        // Let's manually reset the game fields in useDraftStore
-        useDraftStore.setState({
-            currentRound: 1,
-            currentPickIndex: 0,
-            draftHistory: [],
-            step: 'LOBBY'
-        });
+        // Use the new Deep Reset action to ensure clean state
+        useDraftStore.getState().resetDraftingState();
+
+        // Then set step to LOBBY
+        useDraftStore.setState({ step: 'LOBBY' });
 
         // Broadcast the new state
         const newState = useDraftStore.getState().getSerializableState();
@@ -379,14 +377,28 @@ export const useMultiplayerStore = create<MultiplayerState>((set, get) => ({
         const { participants, broadcast } = get();
         const { teams } = useDraftStore.getState();
 
-        // 1. Assign Roles (1:1 Mapping)
-        const newTeams = teams.map((team, index) => {
-            const participant = participants[index];
+        // 1. Shuffle Teams (Randomize Draft Order/Characters)
+        const shuffledTeams = [...teams];
+        for (let i = shuffledTeams.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [shuffledTeams[i], shuffledTeams[j]] = [shuffledTeams[j], shuffledTeams[i]];
+        }
+
+        // 2. Shuffle Participants (Randomize Who Gets Which Slot)
+        const shuffledParticipants = [...participants];
+        for (let i = shuffledParticipants.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [shuffledParticipants[i], shuffledParticipants[j]] = [shuffledParticipants[j], shuffledParticipants[i]];
+        }
+
+        // 3. Assign Roles (1:1 Mapping of Shuffled Teams <-> Shuffled Participants)
+        const newTeams = shuffledTeams.map((team, index) => {
+            const participant = shuffledParticipants[index];
             if (participant) {
                 return {
                     ...team,
                     ownerId: participant.peerId,
-                    // leaderName: participant.name // REMOVED: Keep original team name (e.g. Wolf)
+                    // leaderName: participant.name // REMOVED: Keep original team name
                 };
             } else {
                 // AI Auto-fill
@@ -394,18 +406,19 @@ export const useMultiplayerStore = create<MultiplayerState>((set, get) => ({
             }
         });
 
-        // 2. Update Local State
+        // 3. Update Local State
         useDraftStore.setState({
             teams: newTeams,
             step: 'ORDER_SETTING',
             isAIMode: true // Enable AI mode for auto-filled teams
         });
 
-        // 3. Broadcast Sync
+        // 4. Immediate Broadcast (Fix Delay)
+        // Broadcast Sync immediately after state update
         const stateToSync = useDraftStore.getState().getSerializableState();
         broadcast('SYNC_STATE', stateToSync);
 
-        // 4. Broadcast Start Event
+        // Broadcast Start Event immediately
         broadcast('START_GAME', null);
     },
 

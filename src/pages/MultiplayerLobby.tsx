@@ -53,7 +53,7 @@ export const MultiplayerLobby: React.FC = () => {
                     <div className="bg-surface p-8 rounded-xl border border-white/10 flex flex-col items-center gap-4 w-80">
                         <h2 className="text-xl font-bold text-primary">방 만들기</h2>
                         <p className="text-text-sub text-center text-sm">
-                            방장이 되어 다른 플레이어를 초대하세요.
+                            방장이 되어 다른 유저를 초대하세요.
                         </p>
                         <button
                             onClick={handleCreate}

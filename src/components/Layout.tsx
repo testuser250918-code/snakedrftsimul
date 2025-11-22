@@ -1,7 +1,7 @@
 import React from 'react';
 import { useDraftStore } from '../store/useDraftStore';
 import { useMultiplayerStore } from '../store/useMultiplayerStore';
-import { ArrowLeft, LogOut } from 'lucide-react';
+import { ArrowLeft, LogOut, Users } from 'lucide-react';
 
 interface LayoutProps {
     children: React.ReactNode;
@@ -13,13 +13,29 @@ export const Layout: React.FC<LayoutProps> = ({ children }) => {
     const isCustomMode = useDraftStore((state) => state.isCustomMode);
     const resetDraftingState = useDraftStore((state) => state.resetDraftingState);
     const resetOrderState = useDraftStore((state) => state.resetOrderState);
+    const currentPickIndex = useDraftStore((state) => state.currentPickIndex);
 
-    const { roomId, leaveRoom } = useMultiplayerStore();
+    const { roomId, leaveRoom, isHost } = useMultiplayerStore();
     const isMultiplayer = !!roomId;
+    const isDraftComplete = step === 'DRAFTING' && currentPickIndex >= 20;
 
     const handleHomeClick = () => {
         if (step === 'HOME') return;
-        if (window.confirm('홈으로 돌아가시겠습니까? 진행 중인 데이터가 초기화됩니다.')) {
+
+        let message = '진행 중인 드래프트가 초기화됩니다. 홈으로 이동하시겠습니까?';
+
+        if (isMultiplayer || step === 'LOBBY') {
+            if (step === 'LOBBY' && !isMultiplayer) message = '멀티플레이를 중단하시겠습니까?';
+            else {
+                if (isHost) {
+                    message = '멀티플레이를 중단하시겠습니까?\n방장이 나가면 방이 완전히 삭제됩니다.';
+                } else {
+                    message = '멀티플레이를 중단하시겠습니까?\n나가면 내 자리는 AI로 대체됩니다.';
+                }
+            }
+        }
+
+        if (window.confirm(message)) {
             leaveRoom();
         }
     };
@@ -39,9 +55,8 @@ export const Layout: React.FC<LayoutProps> = ({ children }) => {
     };
 
     const handleExit = () => {
-        if (window.confirm('정말로 나가시겠습니까? 모든 데이터가 삭제됩니다.')) {
-            leaveRoom();
-        }
+        // Reuse the smart logic from handleHomeClick for consistency
+        handleHomeClick();
     };
 
     return (
@@ -73,20 +88,33 @@ export const Layout: React.FC<LayoutProps> = ({ children }) => {
 
                             <div className="w-px h-4 bg-white/10"></div>
 
-                            <button
-                                onClick={handleExit}
-                                className="flex items-center gap-2 text-sm font-medium text-red-400 hover:text-red-300 transition-colors px-3 py-2 rounded-lg hover:bg-red-500/10"
-                            >
-                                <LogOut className="w-4 h-4" />
-                                나가기
-                            </button>
+                            <div className="flex gap-2">
+                                {/* Return to Lobby - Render ONLY if Multiplayer Host AND Draft Complete */}
+                                {isMultiplayer && isHost && isDraftComplete && (
+                                    <button
+                                        onClick={() => useMultiplayerStore.getState().returnToLobby()}
+                                        className="flex items-center gap-2 px-3 py-1.5 bg-primary hover:bg-primary-dark text-black font-bold rounded-lg transition-colors text-sm shadow-[0_0_15px_rgba(0,255,163,0.3)] hover:shadow-[0_0_25px_rgba(0,255,163,0.5)]"
+                                    >
+                                        <Users className="w-4 h-4" />
+                                        대기실로 이동
+                                    </button>
+                                )}
+
+                                <button
+                                    onClick={handleExit}
+                                    className="flex items-center gap-2 px-3 py-1.5 bg-white/5 hover:bg-red-500/20 text-text-sub hover:text-red-500 rounded-lg transition-colors text-sm"
+                                >
+                                    <LogOut className="w-4 h-4" />
+                                    나가기
+                                </button>
+                            </div>
                         </div>
                     )}
                 </div>
             </header>
 
             {/* Main Content */}
-            <main className="flex-1 pt-20 pb-8 px-4 max-w-7xl mx-auto w-full">
+            <main className="flex-1 flex flex-col pt-20 pb-8 px-4 max-w-7xl mx-auto w-full">
                 {children}
             </main>
         </div>

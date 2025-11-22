@@ -3,7 +3,7 @@ import { useDraftStore } from '../store/useDraftStore';
 import { useMultiplayerStore } from '../store/useMultiplayerStore';
 import { PlayerPool } from './components/PlayerPool';
 import { TeamList } from './components/TeamList';
-import { Undo, Users } from 'lucide-react';
+import { Undo } from 'lucide-react';
 import type { Team } from '../types';
 
 export const DraftBoard: React.FC = () => {
@@ -54,12 +54,34 @@ export const DraftBoard: React.FC = () => {
         ? (currentTeam?.ownerId === 'AI' && !isDraftComplete)
         : (isAIMode && !isDraftComplete && currentTeam && currentTeam.id !== userTeamId);
 
+    // Local Timer Logic (Solo AI Mode)
+    useEffect(() => {
+        if (isAIMode && !isMultiplayer && !isDraftComplete) {
+            const timer = setInterval(() => {
+                const { timeLeft, setTimeLeft, skipTurn } = useDraftStore.getState();
+                if (timeLeft > 0) {
+                    setTimeLeft(timeLeft - 1);
+                } else {
+                    skipTurn();
+                }
+            }, 1000);
+            return () => clearInterval(timer);
+        }
+    }, [isAIMode, isMultiplayer, isDraftComplete, currentPickIndex]); // Reset on pick change (handled by store resetTimeLeft usually, but here we rely on store state)
+
+    // Reset Timer on Pick Change (Local)
+    useEffect(() => {
+        if (isAIMode && !isMultiplayer) {
+            useDraftStore.getState().setTimeLeft(30);
+        }
+    }, [currentPickIndex, isAIMode, isMultiplayer]);
+
     useEffect(() => {
         let timeoutId: NodeJS.Timeout;
 
         if (isAITurn) {
-            // AI Protection: Double check ownerId is 'AI'
-            if (currentTeam?.ownerId !== 'AI') return;
+            // AI Protection: Double check ownerId is 'AI' ONLY for Multiplayer
+            if (isMultiplayer && currentTeam?.ownerId !== 'AI') return;
 
             // Delay for AI "thinking" effect (Debounced)
             timeoutId = setTimeout(() => {
@@ -69,13 +91,13 @@ export const DraftBoard: React.FC = () => {
                     // makeAIPick updates store, so we broadcast state
                     setTimeout(() => broadcast('SYNC_STATE', useDraftStore.getState()), 50);
                 }
-            }, 2000);
+            }, 1000); // Reduced to 1s as per requirement
         }
 
         return () => {
             if (timeoutId) clearTimeout(timeoutId);
         };
-    }, [isAITurn, currentPickIndex, makeAIPick, isHost, broadcast, isDraftComplete, currentTeam]);
+    }, [isAITurn, currentPickIndex, makeAIPick, isHost, broadcast, isDraftComplete, currentTeam, isMultiplayer]);
 
     return (
         <div className="flex flex-col h-[calc(100vh-100px)] gap-4">
@@ -111,9 +133,8 @@ export const DraftBoard: React.FC = () => {
                         </div>
                     </div>
                 </div>
-
-                {/* Timer Display - Moved Here */}
-                {!isDraftComplete && (
+                {/* Timer Display - Render ONLY if Multiplayer or AI Mode */}
+                {(isMultiplayer || isAIMode) && !isDraftComplete && (
                     <div className="flex flex-col items-end min-w-[80px]">
                         <span className="text-xs text-text-sub uppercase tracking-wider font-semibold">남은 시간</span>
                         <div className={`text-2xl font-mono font-bold ${timeLeft <= 10 ? 'text-red-500 animate-pulse' : 'text-primary'}`}>
@@ -121,30 +142,20 @@ export const DraftBoard: React.FC = () => {
                         </div>
                     </div>
                 )}
-            </div>
-
-            <div className="flex items-center gap-3">
-                {isHost && isDraftComplete && (
-                    <button
-                        onClick={() => useMultiplayerStore.getState().returnToLobby()}
-                        className="flex items-center gap-2 px-4 py-2 bg-primary hover:bg-primary-dark text-black font-bold rounded-lg transition-colors shadow-[0_0_15px_rgba(0,255,163,0.3)] hover:shadow-[0_0_25px_rgba(0,255,163,0.5)]"
-                    >
-                        <Users className="w-4 h-4" />
-                        대기실로 이동
-                    </button>
-                )}
+                {/* Undo / Previous - Render ONLY if NOT Multiplayer */}
                 {!isMultiplayer && (
-                    <button
-                        onClick={undo}
-                        disabled={draftHistory.length === 0}
-                        className="flex items-center gap-2 px-4 py-2 bg-white/5 hover:bg-white/10 disabled:opacity-30 disabled:cursor-not-allowed text-white rounded-lg transition-colors border border-white/5"
-                    >
-                        <Undo className="w-4 h-4" />
-                        되돌리기
-                    </button>
+                    <div className="flex items-center gap-3 justify-end ">
+                        <button
+                            onClick={undo}
+                            disabled={draftHistory.length === 0}
+                            className="flex items-center gap-2 px-4 py-2 bg-white/5 hover:bg-white/10 disabled:opacity-30 disabled:cursor-not-allowed text-white rounded-lg transition-colors border border-white/5"
+                        >
+                            <Undo className="w-4 h-4" />
+                            되돌리기
+                        </button>
+                    </div>
                 )}
             </div>
-
             {/* Main Content: Split View */}
             <div className="flex-1 grid grid-cols-1 lg:grid-cols-12 gap-6 min-h-0">
                 {/* Left: Player Pool (7 cols) */}

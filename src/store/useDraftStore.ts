@@ -361,8 +361,16 @@ export const useDraftStore = create<ExtendedDraftState>()(
 
                 if (!currentTeam) return;
 
-                // CRITICAL FIX: Only allow AI to pick if ownerId is 'AI'
-                if (currentTeam.ownerId !== 'AI') return;
+                // CRITICAL FIX: Only allow AI to pick if ownerId is 'AI' (Multiplayer) OR it's Solo AI Mode and not user's team
+                if (state.isAIMode && !state.userTeamId) {
+                    // Should not happen if default selection works, but safety check
+                } else if (state.isAIMode && !state.isCustomMode) { // Assuming isCustomMode is false for Solo AI? Actually isAIMode is the key
+                    // Solo AI Mode: Check if it's NOT user's team
+                    if (currentTeam.id === state.userTeamId) return;
+                } else {
+                    // Multiplayer or other modes: Strict 'AI' owner check
+                    if (currentTeam.ownerId !== 'AI') return;
+                }
 
                 const filledPositions = Object.keys(currentTeam.roster);
                 const allPositions = state.positionNames;
@@ -399,13 +407,35 @@ export const useDraftStore = create<ExtendedDraftState>()(
             },
 
             resetDraftingState: () => {
-                set((state) => ({
-                    currentRound: 1,
+                // 1. Deep Copy Players (Fresh State)
+                const freshPlayers = JSON.parse(JSON.stringify(POOL_DATA)).map((p: any, index: number) => ({
+                    id: `player-${index}`,
+                    ...p,
+                    isDrafted: false,
+                    draftedBy: null,
+                }));
+
+                // 2. Deep Reset Teams (Explicit Reconstruction)
+                // Re-create teams from constants to ensure no residual data persists
+                const freshTeams: Team[] = PRESET_LEADERS.map((name, index) => ({
+                    id: `team-${index}`,
+                    leaderName: name,
+                    roster: {}, // Force clear roster (User's requirement: "Explicitly set all slots to null")
+                    draftOrderIndex: -1,
+                    ownerId: undefined, // Will be re-assigned by Multiplayer Store
+                    disconnectedOwnerName: undefined
+                }));
+
+                // 3. Overwrite State
+                set({
+                    teams: freshTeams,
+                    players: freshPlayers,
                     currentPickIndex: 0,
                     draftHistory: [],
-                    players: state.players.map(p => ({ ...p, isDrafted: false, draftedBy: null })),
-                    teams: state.teams.map(t => ({ ...t, roster: {} })),
-                }));
+                    timeLeft: 30,
+                    // Reset Position Names just in case
+                    positionNames: Array.from(new Set(POOL_DATA.map(p => p.position))),
+                }); // Standard set is sufficient as we are providing fresh references
             },
 
             resetOrderState: () => {
