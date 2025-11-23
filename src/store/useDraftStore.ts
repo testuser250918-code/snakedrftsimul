@@ -345,7 +345,7 @@ export const useDraftStore = create<ExtendedDraftState>()(
 
             makeAIPick: () => {
                 const state = get();
-                const { currentPickIndex, teams, players } = state;
+                const { currentPickIndex, teams, players, positionNames } = state;
 
                 if (currentPickIndex >= 20) return;
 
@@ -361,30 +361,98 @@ export const useDraftStore = create<ExtendedDraftState>()(
 
                 if (!currentTeam) return;
 
-                // CRITICAL FIX: Only allow AI to pick if ownerId is 'AI' (Multiplayer) OR it's Solo AI Mode and not user's team
+                // AI Permission Check
                 if (state.isAIMode && !state.userTeamId) {
-                    // Should not happen if default selection works, but safety check
-                } else if (state.isAIMode && !state.isCustomMode) { // Assuming isCustomMode is false for Solo AI? Actually isAIMode is the key
-                    // Solo AI Mode: Check if it's NOT user's team
+                    // Solo AI Mode (Full Auto)
+                } else if (state.isAIMode && !state.isCustomMode) {
+                    // Solo AI Mode (User plays one team)
                     if (currentTeam.id === state.userTeamId) return;
                 } else {
-                    // Multiplayer or other modes: Strict 'AI' owner check
+                    // Multiplayer / Custom
                     if (currentTeam.ownerId !== 'AI') return;
                 }
 
+                // --- Advanced AI Logic ---
+                // Constants (Tunable)
+                const U_BASE = 10;
+                const U_DROP = 0.8;
+                const ALPHA = 1.0; // Rating weight
+                // const BETA = 0.5; // Position Fit weight (Not implemented yet)
+                // const GAMMA = 0.3; // Captain Pref weight (Not implemented yet)
+
+                // 0. Identify needed roles
                 const filledPositions = Object.keys(currentTeam.roster);
-                const allPositions = state.positionNames;
-                const neededPositions = allPositions.filter(p => !filledPositions.includes(p));
+                const rolesNeededTeam = positionNames.filter(p => !filledPositions.includes(p));
 
-                if (neededPositions.length === 0) return;
+                if (rolesNeededTeam.length === 0) return;
 
-                const availablePlayers = players.filter(p => !p.isDrafted && neededPositions.includes(p.position));
+                // Helper: Find next pick index for this team
+                const findNextPickIndex = (teamOrderIdx: number, currentIdx: number) => {
+                    for (let i = currentIdx + 1; i < 20; i++) {
+                        if (getDraftOrderIndex(i) === teamOrderIdx) {
+                            return i;
+                        }
+                    }
+                    return 20; // End of draft
+                };
 
-                availablePlayers.sort((a, b) => (b.score || 0) - (a.score || 0));
+                const nextPickIndex = findNextPickIndex(currentTeam.draftOrderIndex, currentPickIndex);
+                const urgency: Record<string, number> = {};
 
-                if (availablePlayers.length > 0) {
-                    const bestPlayer = availablePlayers[0];
-                    state.pickPlayer(bestPlayer.id);
+                // 1. Calculate Threat & Dropoff for each role
+                rolesNeededTeam.forEach(role => {
+                    // Threat Calculation
+                    let isThreatened = false;
+                    for (let k = currentPickIndex + 1; k < nextPickIndex; k++) {
+                        const teamIdxAtK = getDraftOrderIndex(k);
+                        const teamAtK = teams.find(t => t.draftOrderIndex === teamIdxAtK);
+                        // If the intervening team needs this role, it's a threat
+                        if (teamAtK && !teamAtK.roster[role]) {
+                            isThreatened = true;
+                            break;
+                        }
+                    }
+
+                    // Dropoff Calculation
+                    const candidates = players
+                        .filter(p => !p.isDrafted && p.position === role)
+                        .sort((a, b) => (b.score || 0) - (a.score || 0));
+
+                    const bestRating = candidates[0]?.score || 0;
+                    const secondRating = candidates.length >= 2 ? (candidates[1]?.score || 0) : 0;
+                    const dropoff = bestRating - secondRating;
+
+                    if (isThreatened) {
+                        urgency[role] = U_BASE + (dropoff * U_DROP);
+                    } else {
+                        urgency[role] = 0;
+                    }
+                });
+
+                // 2. Calculate Final Score for each candidate
+                let bestPlayer: Player | null = null;
+                let bestScore = -Infinity;
+
+                const availablePlayers = players.filter(p => !p.isDrafted && rolesNeededTeam.includes(p.position));
+
+                availablePlayers.forEach(p => {
+                    const role = p.position;
+                    const roleUrgency = urgency[role] || 0;
+
+                    // Formula: Base(Rating) + Urgency
+                    // TODO: Add PositionFit and CaptainPref when data is available
+                    const baseScore = (p.score || 0) * ALPHA;
+                    const finalScore = baseScore + roleUrgency;
+
+                    if (finalScore > bestScore) {
+                        bestScore = finalScore;
+                        bestPlayer = p;
+                    }
+                });
+
+                // 3. Execute Pick
+                if (bestPlayer) {
+                    state.pickPlayer((bestPlayer as Player).id);
                 }
             },
 

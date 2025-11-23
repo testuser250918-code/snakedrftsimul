@@ -56,6 +56,8 @@ export const DraftBoard: React.FC = () => {
 
     // Local Timer Logic (Solo AI Mode)
     useEffect(() => {
+        // Timer disabled for Single AI Mode as per user request
+        /*
         if (isAIMode && !isMultiplayer && !isDraftComplete) {
             const timer = setInterval(() => {
                 const { timeLeft, setTimeLeft, skipTurn } = useDraftStore.getState();
@@ -67,13 +69,17 @@ export const DraftBoard: React.FC = () => {
             }, 1000);
             return () => clearInterval(timer);
         }
-    }, [isAIMode, isMultiplayer, isDraftComplete, currentPickIndex]); // Reset on pick change (handled by store resetTimeLeft usually, but here we rely on store state)
+        */
+    }, [isAIMode, isMultiplayer, isDraftComplete, currentPickIndex]);
 
     // Reset Timer on Pick Change (Local)
     useEffect(() => {
+        // Timer disabled for Single AI Mode
+        /*
         if (isAIMode && !isMultiplayer) {
             useDraftStore.getState().setTimeLeft(30);
         }
+        */
     }, [currentPickIndex, isAIMode, isMultiplayer]);
 
     useEffect(() => {
@@ -133,8 +139,8 @@ export const DraftBoard: React.FC = () => {
                         </div>
                     </div>
                 </div>
-                {/* Timer Display - Render ONLY if Multiplayer or AI Mode */}
-                {(isMultiplayer || isAIMode) && !isDraftComplete && (
+                {/* Timer Display - Render ONLY if Multiplayer (Timer disabled for Single AI) */}
+                {(isMultiplayer) && !isDraftComplete && (
                     <div className="flex flex-col items-end min-w-[80px]">
                         <span className="text-xs text-text-sub uppercase tracking-wider font-semibold">남은 시간</span>
                         <div className={`text-2xl font-mono font-bold ${timeLeft <= 10 ? 'text-red-500 animate-pulse' : 'text-primary'}`}>
