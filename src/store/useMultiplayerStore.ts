@@ -45,7 +45,7 @@ export const useMultiplayerStore = create<MultiplayerState>((set, get) => ({
     initializePeer: async (name: string) => {
         // Singleton Guard: Prevent double initialization
         if (get().peer || get().isConnecting) {
-            console.log('Peer already initialized or connecting. Skipping.');
+            // console.log('Peer already initialized or connecting. Skipping.');
             return get().myId;
         }
 
@@ -58,7 +58,7 @@ export const useMultiplayerStore = create<MultiplayerState>((set, get) => ({
 
             return new Promise((resolve, reject) => {
                 peer.on('open', (id: string) => {
-                    console.log('My Peer ID is: ' + id);
+                    // console.log('My Peer ID is: ' + id);
                     set({
                         peer,
                         myId: id,
@@ -95,7 +95,7 @@ export const useMultiplayerStore = create<MultiplayerState>((set, get) => ({
         useDraftStore.setState({ step: 'LOBBY' });
 
         peer.on('connection', (conn: DataConnection) => {
-            console.log('Incoming connection from:', conn.peer);
+            // console.log('Incoming connection from:', conn.peer);
 
             // Room Capacity Check (Max 5)
             if (get().participants.length >= 5) {
@@ -133,7 +133,7 @@ export const useMultiplayerStore = create<MultiplayerState>((set, get) => ({
                             return { participants: updatedParticipants };
                         });
                     } else if (type === 'LEAVE') {
-                        console.log('Participant left:', conn.peer);
+                        // console.log('Participant left:', conn.peer);
                         // Remove participant
                         set((state) => {
                             const updatedParticipants = state.participants.filter(p => p.peerId !== conn.peer);
@@ -175,7 +175,7 @@ export const useMultiplayerStore = create<MultiplayerState>((set, get) => ({
                 });
 
                 conn.on('close', () => {
-                    console.log('Connection closed:', conn.peer);
+                    // console.log('Connection closed:', conn.peer);
                     // Handle unexpected disconnection (same as LEAVE but triggered by close)
                     // We rely on Heartbeat for timeouts, but this handles explicit close events
                     const { participants } = get();
@@ -207,7 +207,7 @@ export const useMultiplayerStore = create<MultiplayerState>((set, get) => ({
             });
 
             if (activeParticipants.length !== participants.length) {
-                console.log('Removing timed out participants');
+                // console.log('Removing timed out participants');
                 set({ participants: activeParticipants });
                 broadcast('UPDATE_PARTICIPANTS', activeParticipants);
 
@@ -270,7 +270,7 @@ export const useMultiplayerStore = create<MultiplayerState>((set, get) => ({
         set({ connection: conn, roomId: hostId, isHost: false });
 
         conn.on('open', () => {
-            console.log('Connected to host');
+            // console.log('Connected to host');
 
             // Send Join Request
             const myName = participants[0]?.name || 'Guest';
@@ -305,7 +305,7 @@ export const useMultiplayerStore = create<MultiplayerState>((set, get) => ({
             // If connection closes unexpectedly and we didn't initiate it (e.g. host crash)
             // We might want to alert or just reset. 
             // For now, let's assume ROOM_CLOSED handles the graceful case.
-            console.log('Connection to host closed');
+            // console.log('Connection to host closed');
         });
     },
 

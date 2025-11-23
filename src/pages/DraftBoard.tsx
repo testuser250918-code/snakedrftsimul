@@ -44,9 +44,9 @@ export const DraftBoard: React.FC = () => {
     // Debug Info
     useEffect(() => {
         if (isMultiplayer) {
-            console.log('My ID:', useMultiplayerStore.getState().myId);
-            console.log('Current Team Owner:', currentTeam?.ownerId);
-            console.log('Is My Turn:', isMyTurn);
+            // console.log('My ID:', useMultiplayerStore.getState().myId);
+            // console.log('Current Team Owner:', currentTeam?.ownerId);
+            // console.log('Is My Turn:', isMyTurn);
         }
     }, [currentTeam, isMultiplayer, isMyTurn]);
 
