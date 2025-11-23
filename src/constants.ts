@@ -4,7 +4,7 @@ export const PRESET_LEADERS = ['갱맘', '뱅', '소우릎', '울프', '큐베']
 
 export const POOL_DATA: Omit<Player, 'id' | 'isDrafted' | 'draftedBy'>[] = [
     // TOP
-    { name: '운타라', position: 'TOP', score: 99, tier: 'S' },
+    { name: '운타라', position: 'TOP', score: 98, tier: 'S' },
     { name: '김뿡', position: 'TOP', score: 81, tier: 'A' },
     { name: '룩삼', position: 'TOP', score: 70, tier: 'C+' },
     { name: '윤가놈', position: 'TOP', score: 70, tier: 'C+' },
