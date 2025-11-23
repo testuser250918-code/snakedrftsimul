@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useMultiplayerStore } from '../store/useMultiplayerStore';
 import { useDraftStore } from '../store/useDraftStore';
 import { Copy, Users, Play, ArrowRight } from 'lucide-react';
+import { trackEvent, trackError, ANALYTICS_EVENTS } from '../utils/analytics';
 
 export const MultiplayerLobby: React.FC = () => {
     const { roomId, myId, isHost, participants, createRoom, joinRoom } = useMultiplayerStore();
@@ -17,13 +18,16 @@ export const MultiplayerLobby: React.FC = () => {
                 await useMultiplayerStore.getState().initializePeer('Player-' + Math.floor(Math.random() * 1000));
             } catch (error) {
                 console.error("Failed to initialize PeerJS:", error);
+                trackError(error instanceof Error ? error.message : 'PeerJS Init Failed', 'MultiplayerLobby');
                 alert("멀티플레이 연결에 실패했습니다. 페이지를 새로고침 해주세요.");
             }
         };
         init();
+        trackEvent(ANALYTICS_EVENTS.PAGE_VIEW, { page: 'Lobby' });
     }, []);
 
     const handleCreate = () => {
+        trackEvent(ANALYTICS_EVENTS.CREATE_ROOM);
         setIsCreating(true);
         loadPresetData(); // Load data first
         createRoom();
@@ -31,10 +35,12 @@ export const MultiplayerLobby: React.FC = () => {
 
     const handleJoin = () => {
         if (!joinId) return;
+        trackEvent(ANALYTICS_EVENTS.JOIN_ROOM);
         joinRoom(joinId);
     };
 
     const handleStartGame = () => {
+        trackEvent('Start Multiplayer Game', { participants: participants.length });
         useMultiplayerStore.getState().assignRolesAndStart();
     };
 

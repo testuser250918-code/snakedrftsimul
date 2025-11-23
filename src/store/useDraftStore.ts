@@ -3,6 +3,7 @@ import { persist } from 'zustand/middleware';
 import Papa from 'papaparse';
 import type { DraftState, Player, Team, DraftStateSnapshot } from '../types';
 import { PRESET_LEADERS, POOL_DATA } from '../constants';
+import { trackEvent, ANALYTICS_EVENTS } from '../utils/analytics';
 
 const INITIAL_STATE = {
     step: 'HOME' as 'HOME' | 'INPUT' | 'ORDER_SETTING' | 'DRAFTING' | 'LOBBY',
@@ -276,6 +277,15 @@ export const useDraftStore = create<ExtendedDraftState>()(
                         return state;
                     }
 
+                    // Track Pick Event
+                    trackEvent(ANALYTICS_EVENTS.PICK_PLAYER, {
+                        player: player.name,
+                        position: player.position,
+                        team: currentTeam.leaderName,
+                        round: state.currentRound,
+                        pickIndex: currentPickIndex
+                    });
+
                     const snapshot: DraftStateSnapshot = {
                         teams: JSON.parse(JSON.stringify(teams)),
                         players: JSON.parse(JSON.stringify(players)),
@@ -331,6 +341,11 @@ export const useDraftStore = create<ExtendedDraftState>()(
                     }
 
                     const nextRound = Math.floor(nextPickIndex / 5) + 1;
+
+                    // Track Game Complete
+                    if (nextPickIndex >= 20) {
+                        trackEvent(ANALYTICS_EVENTS.GAME_COMPLETE);
+                    }
 
                     return {
                         players: newPlayers,
@@ -460,6 +475,8 @@ export const useDraftStore = create<ExtendedDraftState>()(
                 set((state) => {
                     if (state.draftHistory.length === 0) return state;
 
+                    trackEvent(ANALYTICS_EVENTS.UNDO_ACTION);
+
                     const lastSnapshot = state.draftHistory[state.draftHistory.length - 1];
                     const newHistory = state.draftHistory.slice(0, -1);
 
@@ -517,6 +534,7 @@ export const useDraftStore = create<ExtendedDraftState>()(
             },
 
             resetAll: () => {
+                trackEvent(ANALYTICS_EVENTS.RESET_DRAFT);
                 set({
                     step: 'HOME',
                     teams: [],

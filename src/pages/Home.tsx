@@ -2,6 +2,7 @@ import React from 'react';
 import { useDraftStore } from '../store/useDraftStore';
 import { useMultiplayerStore } from '../store/useMultiplayerStore';
 import { Play, Bot, Swords } from 'lucide-react';
+import { trackEvent, ANALYTICS_EVENTS } from '../utils/analytics';
 
 export const Home: React.FC = () => {
     const setStep = (step: 'HOME' | 'INPUT' | 'ORDER_SETTING' | 'DRAFTING' | 'LOBBY') => useDraftStore.setState({ step });
@@ -17,12 +18,14 @@ export const Home: React.FC = () => {
     React.useEffect(() => {
         resetMultiplayer();
         useDraftStore.getState().resetAll();
+        trackEvent(ANALYTICS_EVENTS.PAGE_VIEW, { page: 'Home' });
 
         // Auto-connect to get a fresh ID immediately
         initializePeer('User-' + Math.floor(Math.random() * 1000));
     }, []);
 
     const handleCustomStart = () => {
+        trackEvent('Start Custom Draft');
         setAIMode(false);
         setCustomMode(true);
         setUserTeamId(null);
@@ -30,6 +33,7 @@ export const Home: React.FC = () => {
     };
 
     const handleSoloPreset = () => {
+        trackEvent(ANALYTICS_EVENTS.START_DRAFT_SOLO);
         setAIMode(false);
         setCustomMode(false);
         setUserTeamId(null);
@@ -37,6 +41,7 @@ export const Home: React.FC = () => {
     };
 
     const handleAIMode = () => {
+        trackEvent(ANALYTICS_EVENTS.START_DRAFT_AI);
         setAIMode(true);
         setCustomMode(false);
         setUserTeamId(null); // Will be set in OrderSetting
@@ -104,7 +109,10 @@ export const Home: React.FC = () => {
                             </button>
 
                             <button
-                                onClick={() => setStep('LOBBY')}
+                                onClick={() => {
+                                    trackEvent(ANALYTICS_EVENTS.START_DRAFT_MULTI);
+                                    setStep('LOBBY');
+                                }}
                                 disabled={!myId || isConnecting}
                                 className="flex items-center justify-between px-6 py-4 bg-surface hover:bg-white/10 border border-white/10 hover:border-primary/50 text-white rounded-xl transition-all hover:shadow-[0_0_15px_rgba(0,255,163,0.1)] disabled:opacity-50 disabled:cursor-not-allowed group/multi"
                             >
