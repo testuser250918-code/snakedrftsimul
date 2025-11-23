@@ -77,8 +77,8 @@ Support, 선수4-1, 선수4-2, 선수4-3, 선수4-4, 선수4-5`;
                 )}
             </div>
 
-            {/* Main Content Area - Height reduced to ~50vh */}
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 h-[50vh] shrink-0">
+            {/* Main Content Area - Height reduced to ~50vh on desktop, auto on mobile */}
+            <div className="flex flex-col lg:grid lg:grid-cols-2 gap-4 lg:h-[50vh] shrink-0">
                 {/* Left: Input Area */}
                 <div className="flex flex-col gap-2 h-full min-h-0">
                     <div className="flex items-center justify-between">
@@ -134,7 +134,7 @@ Support, 선수4-1, 선수4-2, 선수4-3, 선수4-4, 선수4-5`;
                         <section className="space-y-2">
                             <h4 className="text-[10px] font-bold text-text-sub uppercase tracking-wider">팀장 목록</h4>
                             {teams.length > 0 ? (
-                                <div className="grid grid-cols-5 gap-2">
+                                <div className="grid grid-cols-2 md:grid-cols-5 gap-2">
                                     {teams.map((team: Team) => (
                                         <div key={team.id} className="bg-app p-2 rounded-lg border border-white/5 text-center">
                                             <div className="text-[9px] text-text-sub mb-0.5">Team {team.id.split('-')[1]}</div>
@@ -153,8 +153,8 @@ Support, 선수4-1, 선수4-2, 선수4-3, 선수4-4, 선수4-5`;
                         <section className="space-y-2">
                             <h4 className="text-[10px] font-bold text-text-sub uppercase tracking-wider">선수 목록</h4>
                             {positionNames.length > 0 ? (
-                                <div className="bg-app rounded-lg border border-white/5 overflow-hidden">
-                                    <div className="grid grid-cols-6 gap-px bg-white/5">
+                                <div className="bg-app rounded-lg border border-white/5 overflow-x-auto">
+                                    <div className="grid grid-cols-6 gap-px bg-white/5 min-w-[600px]">
                                         {/* Header */}
                                         <div className="bg-surface p-2 text-[10px] font-bold text-text-sub uppercase text-center">Pos</div>
                                         {Array.from({ length: 5 }).map((_, i) => (

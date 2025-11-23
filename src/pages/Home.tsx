@@ -51,17 +51,17 @@ export const Home: React.FC = () => {
     return (
         <div className="flex-1 w-full flex flex-col justify-center items-center">
             <div className="flex-[1]" />
-            <div className="flex items-center justify-center w-full">
+            <div className="flex flex-col md:flex-row items-center justify-center w-full gap-8 md:gap-0">
                 {/* Left: Custom Mode */}
-                <div className="flex-1 flex flex-col items-center justify-center p-8 border-r border-white h-full relative overflow-hidden group bg-transparent">
-                    <div className="relative z-10 text-center space-y-6 max-w-md">
+                <div className="flex-1 w-full flex flex-col items-center justify-center p-8 border-b md:border-b-0 md:border-r border-white/10 md:border-white h-full relative overflow-hidden group bg-transparent">
+                    <div className="relative z-10 text-center space-y-6 max-w-md w-full">
                         <div className="space-y-2">
-                            <h2 className="text-sm font-bold tracking-[0.3em] text-text-sub uppercase">Team Building</h2>
-                            <h1 className="text-5xl font-black text-primary tracking-tighter drop-shadow-[0_0_15px_rgba(0,255,163,0.5)]">
+                            <h2 className="text-xs md:text-sm font-bold tracking-[0.3em] text-text-sub uppercase">Team Building</h2>
+                            <h1 className="text-3xl md:text-5xl font-black text-primary tracking-tighter drop-shadow-[0_0_15px_rgba(0,255,163,0.5)]">
                                 SNAKE DRAFT
                             </h1>
                         </div>
-                        <p className="text-text-sub leading-relaxed">
+                        <p className="text-sm md:text-base text-text-sub leading-relaxed">
                             스네이크 드래프트 방식을 사용하여<br />팀장들에게 공정하게 선수를 배분하세요.
                         </p>
                         <button
@@ -75,12 +75,12 @@ export const Home: React.FC = () => {
                 </div>
 
                 {/* Right: Preset & Multi Mode */}
-                <div className="flex-1 flex flex-col items-center justify-center p-8 h-full relative overflow-hidden group bg-transparent">
+                <div className="flex-1 w-full flex flex-col items-center justify-center p-8 h-full relative overflow-hidden group bg-transparent">
                     {/* <div className="absolute inset-0 bg-gradient-to-bl from-surface to-app opacity-50 group-hover:opacity-30 transition-opacity"></div> */}
                     <div className="relative z-10 text-center space-y-8 max-w-md w-full">
                         <div className="space-y-2">
-                            <h2 className="text-sm font-bold tracking-[0.3em] text-text-sub uppercase">2025</h2>
-                            <h1 className="text-5xl font-black text-white tracking-tighter drop-shadow-[0_0_15px_rgba(255,255,255,0.3)]">
+                            <h2 className="text-xs md:text-sm font-bold tracking-[0.3em] text-text-sub uppercase">2025</h2>
+                            <h1 className="text-3xl md:text-5xl font-black text-white tracking-tighter drop-shadow-[0_0_15px_rgba(255,255,255,0.3)]">
                                 CHZZK CUP
                             </h1>
                         </div>

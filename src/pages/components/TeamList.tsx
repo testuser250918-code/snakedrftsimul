@@ -25,7 +25,7 @@ export const TeamList: React.FC = () => {
     const sortedTeams = [...teams].sort((a: Team, b: Team) => a.draftOrderIndex - b.draftOrderIndex);
 
     return (
-        <div className="flex flex-col gap-3 h-full overflow-auto pr-2">
+        <div className="flex flex-col gap-3 h-auto md:h-full overflow-auto pr-2">
             {sortedTeams.map((team: Team) => {
                 const isActive = team.draftOrderIndex === draftOrderIndex && currentPickIndex < 20;
                 const isUserTeam = isMultiplayer ? team.ownerId === myId : team.id === userTeamId;

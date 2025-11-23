@@ -54,9 +54,9 @@ export const MultiplayerLobby: React.FC = () => {
             <div className="flex flex-col items-center justify-center h-full gap-8">
                 <h1 className="text-4xl font-bold text-white">멀티플레이 로비</h1>
 
-                <div className="flex gap-8">
+                <div className="flex flex-col md:flex-row gap-8 w-full max-w-4xl items-center justify-center px-4">
                     {/* Create Room */}
-                    <div className="bg-surface p-8 rounded-xl border border-white/10 flex flex-col items-center gap-4 w-80">
+                    <div className="bg-surface p-8 rounded-xl border border-white/10 flex flex-col items-center gap-4 w-full max-w-sm">
                         <h2 className="text-xl font-bold text-primary">방 만들기</h2>
                         <p className="text-text-sub text-center text-sm">
                             방장이 되어 다른 유저를 초대하세요.
@@ -71,7 +71,7 @@ export const MultiplayerLobby: React.FC = () => {
                     </div>
 
                     {/* Join Room */}
-                    <div className="bg-surface p-8 rounded-xl border border-white/10 flex flex-col items-center gap-4 w-80">
+                    <div className="bg-surface p-8 rounded-xl border border-white/10 flex flex-col items-center gap-4 w-full max-w-sm">
                         <h2 className="text-xl font-bold text-white">방 참가하기</h2>
                         <p className="text-text-sub text-center text-sm">
                             공유받은 방 ID를 입력하여 참가하세요.
@@ -100,14 +100,14 @@ export const MultiplayerLobby: React.FC = () => {
     return (
         <div className="flex flex-col items-center justify-center h-full gap-8">
             <div className="bg-surface p-8 rounded-xl border border-white/10 w-full max-w-2xl">
-                <div className="flex items-center justify-between mb-8">
+                <div className="flex flex-col md:flex-row items-center justify-between mb-8">
                     <h2 className="text-2xl font-bold text-white flex items-center gap-3">
                         <Users className="w-6 h-6 text-primary" />
                         대기실
                     </h2>
                     {isHost && (
-                        <div className="flex items-center gap-2 bg-black/20 px-4 py-2 rounded-lg border border-white/5">
-                            <span className="text-text-sub text-sm">Room ID:</span>
+                        <div className="flex items-center gap-2 bg-black/20 px-4 py-2 rounded-lg border border-white/5 md: mt-5">
+                            <span className="text-text-sub text-sm"><span className="hidden sm:inline">Room </span>ID:</span>
                             <span className="text-white font-mono">{roomId}</span>
                             <button onClick={copyRoomId} className="ml-2 text-primary hover:text-white transition-colors">
                                 <Copy className="w-4 h-4" />

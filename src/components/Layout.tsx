@@ -82,7 +82,9 @@ export const Layout: React.FC<LayoutProps> = ({ children }) => {
                                     className="flex items-center gap-2 text-sm font-medium text-text-sub hover:text-white transition-colors px-3 py-2 rounded-lg hover:bg-white/5"
                                 >
                                     <ArrowLeft className="w-4 h-4" />
-                                    이전 단계
+                                    <span className="ml-2">
+                                        이전 단계
+                                    </span>
                                 </button>
                             )}
 
@@ -96,7 +98,9 @@ export const Layout: React.FC<LayoutProps> = ({ children }) => {
                                         className="flex items-center gap-2 px-3 py-1.5 bg-primary hover:bg-primary-dark text-black font-bold rounded-lg transition-colors text-sm shadow-[0_0_15px_rgba(0,255,163,0.3)] hover:shadow-[0_0_25px_rgba(0,255,163,0.5)]"
                                     >
                                         <Users className="w-4 h-4" />
-                                        대기실로 이동
+                                        <span className="hidden sm:inline ml-2">
+                                            대기실로 이동
+                                        </span>
                                     </button>
                                 )}
 
@@ -105,7 +109,9 @@ export const Layout: React.FC<LayoutProps> = ({ children }) => {
                                     className="flex items-center gap-2 px-3 py-1.5 bg-white/5 hover:bg-red-500/20 text-text-sub hover:text-red-500 rounded-lg transition-colors text-sm"
                                 >
                                     <LogOut className="w-4 h-4" />
-                                    나가기
+                                    <span className="hidden sm:inline ml-2">
+                                        나가기
+                                    </span>
                                 </button>
                             </div>
                         </div>

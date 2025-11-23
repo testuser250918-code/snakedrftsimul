@@ -37,7 +37,7 @@ export const PlayerPool: React.FC = () => {
     };
 
     return (
-        <div className="bg-surface border border-white/5 rounded-xl p-4 h-full overflow-auto shadow-lg">
+        <div className="bg-surface border border-white/5 rounded-xl p-4 h-[50vh] md:h-full overflow-auto shadow-lg">
             <h3 className="text-xl font-bold text-white mb-4 sticky top-0 bg-surface/95 p-2 rounded-lg backdrop-blur-sm z-10 border-b border-white/5">
                 대기 중인 선수 (Player Pool)
             </h3>
@@ -53,7 +53,7 @@ export const PlayerPool: React.FC = () => {
                                 <span className="w-1.5 h-1.5 rounded-full bg-primary"></span>
                                 {pos}
                             </h4>
-                            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-2">
+                            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 lg:grid-cols-5 gap-2">
                                 {positionPlayers.map((player: Player) => {
                                     const isDisabled = player.isDrafted || isPositionFilled || currentPickIndex >= 20;
 
@@ -63,7 +63,7 @@ export const PlayerPool: React.FC = () => {
                                             onClick={() => handlePick(player.id)}
                                             disabled={isDisabled}
                                             className={clsx(
-                                                "h-28 p-2 rounded-lg text-sm font-medium transition-all duration-200 border text-left relative overflow-hidden group flex flex-col justify-between",
+                                                "max-h-[110px] p-2 rounded-lg text-sm font-medium transition-all duration-200 border text-left relative overflow-hidden group flex flex-col justify-between",
                                                 player.isDrafted
                                                     ? "bg-neutral-900 border-white/5 text-text-sub/30 cursor-not-allowed"
                                                     : isDisabled
@@ -76,9 +76,9 @@ export const PlayerPool: React.FC = () => {
                                                 <div className="truncate font-bold text-sm leading-tight">{player.name}</div>
                                             </div>
 
-                                            <div className="w-full h-3 mt-1">
+                                            <div className="w-full h-3 mb-2">
                                                 {player.isDrafted ? (
-                                                    <div className="text-[9px] text-text-sub/50 truncate">
+                                                    <div className="text-right text-[10px] text-text-sub/50 truncate">
                                                         Picked by {teams.find((t: Team) => t.id === player.draftedBy)?.leaderName}
                                                     </div>
                                                 ) : (

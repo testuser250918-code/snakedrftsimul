@@ -96,9 +96,9 @@ export const OrderSetting: React.FC = () => {
 
     return (
         <div className="max-w-3xl mx-auto h-full flex flex-col">
-            <div className="text-center mb-8">
-                <h2 className="text-3xl font-bold text-white mb-2">순서 정하기</h2>
-                <p className="text-text-sub">
+            <div className="text-center mb-4 md:mb-8 shrink-0">
+                <h2 className="text-2xl md:text-3xl font-bold text-white mb-2">순서 정하기</h2>
+                <p className="text-text-sub text-xs md:text-base">
                     {isGuest
                         ? "방장이 드래프트 순서를 설정하고 있습니다. 잠시만 기다려주세요."
                         : "드래프트 순서를 설정하세요. 카드를 드래그하여 순서를 변경할 수 있습니다."}
@@ -117,11 +117,11 @@ export const OrderSetting: React.FC = () => {
                 )}
             </div>
 
-            <div className="flex w-full h-full gap-4 pr-2">
+            <div className="flex w-full h-full gap-2 md:gap-4 pr-1 md:pr-2 min-h-0">
                 {/* 2. 왼쪽: 숫자 컬럼 (고정된 순서 1, 2, 3...) */}
                 <div className="flex flex-col space-y-3 pt-[1px] shrink-0">
                     {localOrder.map((_, index) => (
-                        <div key={`number-${index}`} className="flex items-center justify-center h-[70px]">
+                        <div key={`number-${index}`} className="flex items-center justify-center md:h-[70px] h-[62px]">
                             <div className="flex items-center justify-center w-10 h-10 bg-app text-primary font-bold rounded-full border border-primary/20 shrink-0 shadow-[0_0_10px_rgba(0,255,163,0.1)]">
                                 {index + 1}
                             </div>
@@ -181,7 +181,7 @@ export const OrderSetting: React.FC = () => {
                                                                 {...provided.draggableProps}
                                                                 {...provided.dragHandleProps}
                                                                 className={clsx(
-                                                                    "flex-1 flex items-center gap-4 p-4 border rounded-xl shadow-sm transition-all group",
+                                                                    "flex-1 flex items-center gap-2 md:gap-4 p-3 md:p-4 border rounded-xl shadow-sm transition-all group",
                                                                     !isGuest && "cursor-grab active:cursor-grabbing",
                                                                     snapshot.isDragging ? "border-primary shadow-[0_0_20px_rgba(0,255,163,0.2)] z-50" : "hover:border-primary/30",
                                                                     isMyTeam ? "bg-primary/10 border-primary ring-1 ring-primary" : "bg-surface border-white/5",
