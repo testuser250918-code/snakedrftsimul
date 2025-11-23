@@ -4,7 +4,7 @@ export const PRESET_LEADERS = ['갱맘', '뱅', '소우릎', '울프', '큐베']
 
 export const POOL_DATA: Omit<Player, 'id' | 'isDrafted' | 'draftedBy'>[] = [
     // TOP
-    { name: '운타라', position: 'TOP', score: 98, tier: 'S' },
+    { name: '운타라', position: 'TOP', score: 97, tier: 'S' },
     { name: '김뿡', position: 'TOP', score: 81, tier: 'A' },
     { name: '룩삼', position: 'TOP', score: 70, tier: 'C+' },
     { name: '윤가놈', position: 'TOP', score: 70, tier: 'C+' },
@@ -25,7 +25,7 @@ export const POOL_DATA: Omit<Player, 'id' | 'isDrafted' | 'draftedBy'>[] = [
     { name: '명예훈장', position: 'BOT', score: 79, tier: 'B+' },
 
     // SUP
-    { name: '순당무', position: 'SUP', score: 99, tier: 'S' },
+    { name: '순당무', position: 'SUP', score: 100, tier: 'S' },
     { name: '인간젤리', position: 'SUP', score: 88, tier: 'A' },
     { name: '던', position: 'SUP', score: 76, tier: 'B' },
     { name: '푸린', position: 'SUP', score: 67, tier: 'C' },

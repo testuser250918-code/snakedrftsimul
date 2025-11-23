@@ -390,7 +390,7 @@ export const useDraftStore = create<ExtendedDraftState>()(
                 // --- Advanced AI Logic ---
                 // Constants (Tunable)
                 const U_BASE = 10;
-                const U_DROP = 0.8;
+                const U_DROP = 0.5;
                 const ALPHA = 1.0; // Rating weight
                 // const BETA = 0.5; // Position Fit weight (Not implemented yet)
                 // const GAMMA = 0.3; // Captain Pref weight (Not implemented yet)
